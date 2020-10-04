@@ -4,3 +4,20 @@ author: "Gemma Clark, Raina Monaghan, Suzanna Storms"
 date: "Fall 2020"
 output: html_document
 ---
+# Group 4 Project for CPSC 441, Fall 2020
+
+
+### System Setup
+```{r}
+install.packages('tidytuesdayR')
+library(tidytuesdayR)
+tt_datasets(2018)
+tt_datasets(2019)
+tt_datasets(2020)
+
+NFL = tt_load('2018-04-09')
+NFL_data = NFL$nfl_salary
+tuition = tt_load(2018, 1)
+tuition_data = tuition$us_avg_tuition
+
+```
