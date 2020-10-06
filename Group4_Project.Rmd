@@ -15,9 +15,13 @@ tt_datasets(2018)
 tt_datasets(2019)
 tt_datasets(2020)
 
-NFL = tt_load('2018-04-09')
-NFL_data = NFL$nfl_salary
-tuition = tt_load(2018, 1)
-tuition_data = tuition$us_avg_tuition
+malaria = tt_load(2018, 33)
+malaria_cases = malaria$malaria_inc
+malaria_age = malaria$malaria_deaths_age
+malaria_deaths = malaria$malaria_deaths
+voter = tt_load(2018,28)
+voter_data = voter$voter_turnout
+
+
 
 ```
