@@ -19,8 +19,23 @@ malaria = tt_load(2018, 33)
 malaria_cases = malaria$malaria_inc
 malaria_age = malaria$malaria_deaths_age
 malaria_deaths = malaria$malaria_deaths
+
 voter = tt_load(2018,28)
 voter_data = voter$voter_turnout
+
+dairy = tt_load(2019,5)
+cheese = dairy$clean_cheese
+milk_fluid = dairy$fluid_milk_sales
+milk_facts = dairy$milk_products_facts
+cow = dairy$milkcow_facts
+state = dairy$state_milk_production
+
+jail = tt_load(2019, 4)
+incarceration = jail$incarceration_trends
+pretrial_pop = jail$pretrial_population
+pretrial = jail$pretrial_summary
+prison_pop = jail$prison_population
+jail_sum = jail$prison_summary
 
 
 
