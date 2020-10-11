@@ -1,0 +1,31 @@
+---
+title: "Raina"
+author: "Raina Monaghan"
+date: "10/11/2020"
+output: html_document
+---
+
+
+<!-- Will add comments later -->
+```{r}
+
+library(tidyverse)
+library(tidytuesdayR)
+
+dairy = tt_load(2019,5)
+
+
+clean_cheese <- dairy$clean_cheese
+clean_cheese <- clean_cheese %>% rename(year = Year) 
+
+milk_product_facts <- dairy$milk_products_facts
+
+
+joined <- inner_join(clean_cheese, milk_products_facts, by = "year")
+joined <- joined %>% select(2:16, 20:24)
+summary(joined)
+
+  
+ggplot(clean_cheese) + geom_line(aes(x=clean_cheese$year, y=clean_cheese$`Total Natural Cheese`)) + geom_line(aes(x=clean_cheese$year, clean_cheese$`Total Processed Cheese Products`)) 
++ labs(title = "Total Natural CHeeese Production vs. Total Processed Cheese Production", x = "Year", y = "Production(lbs)")
+```
