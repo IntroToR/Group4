@@ -31,11 +31,6 @@ state_milk_production = dairy$state_milk_production
 ```
 
 
-
-## Examining Milk Production by State
-
-test
-
 ## State Milk Production Across the Decades
 ```{r}
 # Organize states data so that year has columns with milk production
@@ -76,3 +71,6 @@ ggarrange(fig70, fig80, fig90, fig00, fig10, fig17,
 
 
 
+## Milk Production by Region over Time
+
+plot time on x axis, milk production on y axis, several lines for each region
