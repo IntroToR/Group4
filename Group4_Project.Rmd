@@ -14,11 +14,11 @@ library(tidytuesdayR)
 
 
 dairy = tt_load(2019,5)
-cheese = dairy$clean_cheese
-milk_fluid = dairy$fluid_milk_sales
-milk_facts = dairy$milk_products_facts
-cow = dairy$milkcow_facts
-state = dairy$state_milk_production
+clean_cheese = dairy$clean_cheese
+fluid_milk_sales = dairy$fluid_milk_sales
+milk_products_facts = dairy$milk_products_facts
+milkcow_facts = dairy$milkcow_facts
+state_milk_production = dairy$state_milk_production
 
 
 ```
