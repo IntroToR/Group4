@@ -1,42 +1,39 @@
 ---
-title: "Group4_Project"
+title: "Group 4 Project for CPSC 441"
 author: "Gemma Clark, Raina Monaghan, Suzanna Storms"
 date: "Fall 2020"
 output: html_document
 ---
-# Group 4 Project for CPSC 441, Fall 2020
 
+# Introduction
+For the final project in CPSC 441 Fall 2020, our group has selected the Dairy production and consumption data from the tidytuesday R package. The data originates from the United States Department of Agriculture and appeared in an article from NPR (National Public Radio). The data consist of five csv files including data on (1) cows and their  milk production, (2) fluid milk sales, (3) facts about milk products including cheese and butter, (4) consumption of various cheeses, and (5) milk production by state. We have divided our analysis into three categories: cows, milk, and other dairy products.
 
-### System Setup
+The following was used to create variables which we would all use and to install packages needed for our analysis.
+# System Setup
 ```{r}
 install.packages('tidytuesdayR')
 library(tidytuesdayR)
-tt_datasets(2018)
-tt_datasets(2019)
-tt_datasets(2020)
 
-malaria = tt_load(2018, 33)
-malaria_cases = malaria$malaria_inc
-malaria_age = malaria$malaria_deaths_age
-malaria_deaths = malaria$malaria_deaths
-
-voter = tt_load(2018,28)
-voter_data = voter$voter_turnout
 
 dairy = tt_load(2019,5)
-cheese = dairy$clean_cheese
-milk_fluid = dairy$fluid_milk_sales
-milk_facts = dairy$milk_products_facts
-cow = dairy$milkcow_facts
-state = dairy$state_milk_production
-
-jail = tt_load(2019, 4)
-incarceration = jail$incarceration_trends
-pretrial_pop = jail$pretrial_population
-pretrial = jail$pretrial_summary
-prison_pop = jail$prison_population
-jail_sum = jail$prison_summary
-
+clean_cheese = dairy$clean_cheese
+fluid_milk_sales = dairy$fluid_milk_sales
+milk_products_facts = dairy$milk_products_facts
+milkcow_facts = dairy$milkcow_facts
+state_milk_production = dairy$state_milk_production
 
 
 ```
+
+# Cows
+Suzanna's part
+
+
+# Milk
+Gemma's part
+
+
+# Other Dairy
+Raina's part
+
+
