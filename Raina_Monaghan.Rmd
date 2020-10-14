@@ -11,27 +11,92 @@ output: html_document
 library(dplyr)
 library(tidyverse)
 library(tidytuesdayR)
+library(ggplot2)
 
-dairy = tt_load(2019,5)
+dairy = tt_load(2019, 5)
 
 clean_cheese <- dairy$clean_cheese
-clean_cheese <- clean_cheese %>% rename(year = Year) 
+clean_cheese <- clean_cheese %>% rename(year = Year)
 milk_product_facts <- dairy$milk_products_facts
 
-joined <- inner_join(clean_cheese, dairy$milk_products_facts, by = "year")
-joined1 <- select(joined, "Cheddar":"Foods and spreads", "cheese_american":"cheese_cottage")
-summary(joined1)
+joined <-
+  inner_join(clean_cheese, dairy$milk_products_facts, by = "year")
+joined <-
+  select(joined,
+         "Cheddar":"Foods and spreads",
+         "cheese_american":"cheese_cottage")
+summary(joined)
 
 clean_cheese_long <- clean_cheese %>%
-  gather(cheese_type, lbs_per_person, -year) 
+  gather(cheese_type, lbs_per_person,-year)
+clean_cheese_long <- na.omit(clean_cheese_long)
+summary(clean_cheese_long)
 
-  
-ggplot(clean_cheese) + geom_line(aes(x=clean_cheese$year, y=clean_cheese$`Total Natural Cheese`, color = "Total Natural Cheese")) +
-  geom_line(aes(x=clean_cheese$year, clean_cheese$`Total Processed Cheese Products`, color = "Total Processed Cheese")) 
-  
-ggplot(clean_cheese) + geom_line(aes(x=clean_cheese$year, y=clean_cheese$`Total Italian Cheese`, color = "Total Italian Cheese"))+
-  geom_line(aes(x=clean_cheese$year, y=clean_cheese$`Total American Chese`, color = "Total American Cheese"))
+tac <- clean_cheese$`Total American Chese`
+tic <- clean_cheese$`Total Italian Cheese`
+tnc <- clean_cheese$`Total Natural Cheese`
+tpcp <- clean_cheese$`Total Processed Cheese Products`
+year<- clean_cheese$year
 
-ANOVA <- aov(year~cheese_type, data = clean_cheese_long)
-summary(ANOVA)
+
+ggplot(clean_cheese) + geom_line(
+  aes(
+    x = year,
+    y = tnc,
+    color = "Total Natural Cheese"
+  )
+) +
+  geom_line(
+    aes(
+      x = year,
+      tpcp,
+      color = "Total Processed Cheese"
+    )
+  )
+  
+  
+  ggplot(clean_cheese) + geom_line(
+    aes(
+      x = year,
+      y = tic,
+      color = "Total Italian Cheese"
+    )
+  ) +
+  geom_line(
+    aes(
+      x = year,
+      y = tac,
+      color = "Total American Cheese"
+    )
+  )
+
+ggplot(
+  clean_cheese,
+  aes(
+    x = year,
+    y = tpcp,
+    color = "Total Processed Cheese"
+  )
+) + geom_point() +
+  geom_smooth(method = lm,
+              se = FALSE,
+              fullrange = TRUE)
+
+ggplot(
+  clean_cheese,
+  aes(
+    x = clean_cheese$year,
+    y = clean_cheese$`Total Italian Cheese`,
+    color = "Total Italian Cheese"
+  )
+) +
+  geom_point() +
+  geom_smooth(method = lm,
+              se = FALSE,
+              fullrange = TRUE)
+
+TPCP_reg <-
+  lm(year ~ tpcp)
+summary(TPCP_reg)
+
 ```
