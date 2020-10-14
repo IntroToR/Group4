@@ -6,7 +6,7 @@ output: html_document
 ---
 
 # Introduction
-For the final project in CPSC 441 Fall 2020, our group has selected the Dairy production and consumption data from the tidytuesday R package. The data originates from the United States Department of Agriculture and appeared in an article from NPR (National Public Radio). The data consist of five csv files including data on (1) cows and their  milk production, (2) fluid milk sales, (3) facts about milk products including cheese and butter, (4) consumption of various cheeses, and (5) milk production by state. We have divided our analysis into three categories: cows, milk, and other dairy products.
+For the final project in CPSC 441 Fall 2020, our group has selected the Dairy production and consumption data from the tidytuesday R package. The data originates from the United States Department of Agriculture and appeared in an article from NPR (National Public Radio). The data consist of five csv files including data on (1) cows and their  milk production, (2) fluid milk sales, (3) facts about milk products including cheese and butter, (4) consumption of various cheeses, and (5) milk production by state. Each member of the group analyzed a category: cows (Suzanna Storms), milk (Gemma Clark), and cheese (Raina Monaghan).
 
 The following was used to create variables which we would all use and to install packages needed for our analysis.
 # System Setup
