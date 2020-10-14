@@ -2,7 +2,9 @@
 title: "Gemma Portion"
 author: "Gemma Clark"
 date: "Fall 2020"
-output: html_document
+output:
+  pdf_document: default
+  html_document: default
 ---
 State analyses, milk analyses (Grade A = milk, Grade B = cheese, yogurt, etc.)
 (milk fluid, state, milk_facts for the milk stuff, avoid cheese and butter stuff)
@@ -21,6 +23,8 @@ library(ggpubr)
 library(usmap)
 #install.packages('plyr')
 library(plyr)
+#install.packages('data.table')
+library(data.table)
 
 dairy = tt_load(2019,5)
 clean_cheese = dairy$clean_cheese
@@ -48,11 +52,48 @@ The state_milk_production csv file contained four columns: region, state, year, 
 10. Pacific (WA, OR, CA, AK, HI)
 
 
-### Summary Statistics of Milk Production by State and Region
-In this section, summary statistics will be produced for milk production by year, by state, and by region.
+### Summary Statistics of Milk Production by State and by Year
 ```{r}
+# Summary statistics to provide
+cols = c('mean', 'median', 'standard_deviation', 'minimum', 'maximum', 'sample_size')
 
-#Get mean, median, std dev, min, max, count for milk production by year and by state and by region
+
+# Preparing summary statistics by state
+prep = state_milk_production[,-1]
+state_df = pivot_wider(prep, names_from = state, values_from = milk_produced)
+
+state_stats = matrix(, nrow = (ncol(state_df) - 1), ncol = 6)
+colnames(state_stats) = cols
+state_stats_rows = c()
+j = 1
+
+for (i in 2:(ncol(state_df))) {
+  state_stats_rows = append(state_stats_rows, colnames(state_df)[i])
+  state_stats_data = as.numeric(as.matrix(state_df[i]))
+  state_stats[j, 'mean'] = mean(state_stats_data)
+  state_stats[j, 'median'] = median(state_stats_data)
+  state_stats[j, 'standard_deviation'] = sd(state_stats_data)
+  state_stats[j, 'minimum'] = min(state_stats_data)
+  state_stats[j, 'maximum'] = max(state_stats_data)
+  state_stats[j, 'sample_size'] = length(state_stats_data)
+
+  j = j + 1
+}
+
+rownames(state_stats) = state_stats_rows
+
+# Visualization and Summary
+print(state_stats)
+ggplot(state_milk_production, aes(x = state, y = milk_produced)) +
+  geom_boxplot() +
+  labs(x = 'State', y = 'Milk Produced (lbs)', title = 'Pounds of Milk Produced 1970-2017') + 
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+
+
+
+
+# Preparing summary statistics by year
+
 
 
 
@@ -158,16 +199,17 @@ ggplot(reg_milk, aes(x = year, y = milk_production, colour = region)) +
 ```
 
 
-### Statistical Analyses of Milk Production by State and Region
+### Statistical Analyses of Milk Production
+Here, we perform a two-way ANOVA where the independent variables are state and year, and the dependent variable is pounds of milk produced. As shown by the p-values below, the differences between some of the means are statistically significant. However, the residuals of the ANOVA model are not normally distributed (as shown by the Shapiro-Wilk test) which may have had some impact on the ANOVA outcome. Further analysis using non-parametric tests would be recommended for this dataset.
 ```{r}
+# Create ANOVA model and present the results
 
+# ANOVA using state and year as independent variables
+aov.milk = aov(milk_produced ~ state + year, data = state_milk_production)
+summary(aov.milk)
 
-
-
-
-# Do an ANOVA with region & year as predictor variable and milk production as response variable
-
-
+milk.residuals = aov.milk$residuals
+shapiro.test(milk.residuals)
 
 ```
 
