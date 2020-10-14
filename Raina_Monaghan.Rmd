@@ -52,8 +52,13 @@ ggplot(clean_cheese) + geom_line(
       tpcp,
       color = "Total Processed Cheese"
     )
+  ) + labs(
+    title = "Total Natural Cheese vs. Total Processed Cheese",
+    subtitle = "A comparison of lbs per person consumed (1970 to 2017)",
+    y = "lbs per person",
+    x = "Year"
   )
-  
+
   
   ggplot(clean_cheese) + geom_line(
     aes(
@@ -79,20 +84,20 @@ ggplot(
   )
 ) + geom_point() +
   geom_smooth(method = lm,
-              se = FALSE,
+              se = TRUE,
               fullrange = TRUE)
 
 ggplot(
   clean_cheese,
   aes(
-    x = clean_cheese$year,
-    y = clean_cheese$`Total Italian Cheese`,
+    x = year,
+    y = tic,
     color = "Total Italian Cheese"
   )
 ) +
   geom_point() +
   geom_smooth(method = lm,
-              se = FALSE,
+              se = TRUE,
               fullrange = TRUE)
 
 TPCP_reg <-
