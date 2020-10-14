@@ -25,12 +25,15 @@ joined <-
   select(joined,
          "Cheddar":"Foods and spreads",
          "cheese_american":"cheese_cottage")
+joined <- na.omit(clean_cheese)
+clean_cheese <- na.omit(clean_cheese)
+view(joined)
 summary(joined)
 
 clean_cheese_long <- clean_cheese %>%
-  gather(cheese_type, lbs_per_person,-year)
-clean_cheese_long <- na.omit(clean_cheese_long)
+  gather(cheese_type, lbs_per_person,-year) 
 summary(clean_cheese_long)
+
 
 tac <- clean_cheese$`Total American Chese`
 tic <- clean_cheese$`Total Italian Cheese`
@@ -53,26 +56,31 @@ ggplot(clean_cheese) + geom_line(
       color = "Total Processed Cheese"
     )
   ) + labs(
-    title = "Total Natural Cheese vs. Total Processed Cheese",
+    title = "Total Natural Cheese and Total Processed Cheese Consumption",
     subtitle = "A comparison of lbs per person consumed (1970 to 2017)",
     y = "lbs per person",
     x = "Year"
   )
 
-  
-  ggplot(clean_cheese) + geom_line(
-    aes(
-      x = year,
-      y = tic,
-      color = "Total Italian Cheese"
-    )
-  ) +
+
+ggplot(clean_cheese) + geom_line(
+  aes(
+    x = year,
+    y = tic,
+    color = "Total Italian Cheese"
+  )
+) +
   geom_line(
     aes(
       x = year,
       y = tac,
       color = "Total American Cheese"
     )
+  ) + labs(
+    title = "Total Italian Cheese and Total American Cheese Consumption",
+    subtitle = "A comparison of lbs per person consumed (1970 to 2017)",
+    y = "lbs per person",
+    x = "Year"
   )
 
 ggplot(
@@ -87,21 +95,20 @@ ggplot(
               se = TRUE,
               fullrange = TRUE)
 
-ggplot(
-  clean_cheese,
-  aes(
-    x = year,
-    y = tic,
-    color = "Total Italian Cheese"
-  )
-) +
-  geom_point() +
-  geom_smooth(method = lm,
-              se = TRUE,
-              fullrange = TRUE)
 
-TPCP_reg <-
+
+tpcp.reg <-
   lm(year ~ tpcp)
-summary(TPCP_reg)
+summary(tpcp.reg)
+
+tnc.reg <-
+  lm(year ~ tnc)
+summary(tnc.reg)
+
+tac.reg <- lm(year ~ tac)
+summary(tac.reg)
+
+tic.reg <- lm(year ~ tic)
+summary(tic)
 
 ```
