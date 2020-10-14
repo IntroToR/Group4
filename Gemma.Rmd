@@ -41,6 +41,7 @@ The state_milk_production csv file contained four columns: region, state, year, 
 
   
 ### Summary Statistics and Boxplots of Milk Production by State and by Year
+Here, I am calculating some summary statistics and boxplots for milk production by state and by year. This includes the mean, median, standard deviation, minimum, maximum, and sample size of each sub-group. This R chunk is used for calculating summary statistics by state. 
 ```{r, fig.width = 10}
 # Preparing summary statistics by state
 prep = state_milk_production[,-1]
@@ -89,6 +90,7 @@ ggplot(milk_plot_data, aes(x = state_abb, y = milk_produced, fill = region)) +
 ```
 
 
+This R chunk is used for calculating summary statistics by year
 ```{r, fig.width = 10}
 # Preparing summary statistics by year
 year_df = pivot_wider(state_milk_production, names_from = year, values_from = milk_produced)
@@ -128,7 +130,7 @@ ggplot(state_milk_production, aes(year, milk_produced, group = year)) +
   
 
 ### Visual Representation of State Milk Production Across the Decades
-In this section, we provide several choropleth maps of the United States showing milk production in each state from 1970 to 2017. As shown in the maps, California and Wisconsin tended to produce more pounds of milk than other states.
+In this section, I am providing several choropleth maps of the United States showing milk production in each state from 1970 to 2017. As shown in the maps, California and Wisconsin tended to produce more pounds of milk than other states.
 ```{r, fig.width = 10}
 # Organize states data so that year has columns with milk production
 states_by_year = pivot_wider(state_milk_production, names_from = year, values_from = milk_produced)
@@ -170,7 +172,7 @@ ggarrange(fig70, fig80, fig90, fig00, fig10, fig17,
   
 
 ### Visual Representation of Milk Production by Region over Time
-In this section, we provide a graph containing the total pounds of milk produced in each region over the 47-year period of available data. Note that some regions had more states than other regions which could have affected the graph in this section. As shown below, the Lake States (MI, WI, MN) were consistently high producers of milk, and the production of milk in the Pacific states (WA, OR, CA, AK, HI) grew to become the highest regional producers of milk over time.
+In this section, I am providing a graph containing the total pounds of milk produced in each region over the 47-year period of available data. Note that some regions had more states than other regions which could have affected the graph in this section. As shown below, the Lake States (MI, WI, MN) were consistently high producers of milk, and the production of milk in the Pacific states (WA, OR, CA, AK, HI) grew to become the highest regional producers of milk over time.
 ```{r, fig.width = 10}
 interim = data.frame(year = state_milk_production$year,
                      state = state_milk_production$state,
@@ -228,7 +230,7 @@ ggplot(reg_milk, aes(x = year, y = milk_production, colour = region)) +
   
 
 ### Statistical Analyses of Milk Production
-Here, we perform a two-way ANOVA where the independent variables are state and year, and the dependent variable is pounds of milk produced. As shown by the p-values below, the differences between some of the means are statistically significant. However, the residuals of the ANOVA model are not normally distributed (as shown by the Shapiro-Wilk test) which may have had some impact on the ANOVA outcome. Further analysis using non-parametric tests would be recommended for this dataset.
+Here, I am performing a two-way ANOVA where the independent variables are state and year, and the dependent variable is pounds of milk produced. As shown by the p-values below, the differences between some of the means are statistically significant. However, the residuals of the ANOVA model are not normally distributed (as shown by the Shapiro-Wilk test) which may have had some impact on the ANOVA outcome. Further analysis using non-parametric tests would be recommended for this dataset.
 ```{r, fig.width = 10}
 # Create ANOVA model and present the results
 
@@ -246,8 +248,6 @@ shapiro.test(milk.residuals)
 
 ## Fluid Milk Sales
 The fluid_milk_sales csv file contained three columns: year, milk type, and pounds of milk product sold per year. The years ranged from 1970 to 2017 and the milk types included whoe milk, reduced fat (2%) milk, low fat (1%) milk, skim milk, flavored whole milk, flavored (not whole) milk, buttermilk, and eggnog. There was an additional column that included the total milk product.
-
-  
 
 ### Summary Statistics of Fluid Milk Sales
 ```{r, fig.width = 10}
@@ -300,7 +300,7 @@ ggplot(milk_type_graph_data, aes(milk_type, pounds, group = milk_type, color = m
   
 
 ### Visual Representation of Fluid Milk Sales 
-In this section, we use a stacked bar chart to show the proportions of each type of milk that were produced from 1975 to 2017.
+In this section, I am using a stacked bar chart to show the proportions of each type of milk that were produced from 1975 to 2017.
 ```{r, fig.width = 10}
 graph_data = filter(fluid_milk_sales, milk_type != 'Total Production')
 
@@ -314,7 +314,7 @@ ggplot(graph_data, aes(x = year, y = pounds, fill = milk_type)) +
   
 
 ### Statiscal Analyses of Fluid Milk Sales
-Here, we perform a two-way ANOVA where the independent variables are milk type and year, and the dependent variable is pounds of milk sold per year. As shown by the p-values below, milk sales among milk type are statistically different, but milk sales across the years are not. However, the residuals of the ANOVA model are not normally distributed (as shown by the Shapiro-Wilk test) which may have had some impact on the ANOVA outcome. Further analysis using non-parametric tests would be recommended for this dataset.
+Here, I am performing a two-way ANOVA where the independent variables are milk type and year, and the dependent variable is pounds of milk sold per year. As shown by the p-values below, milk sales among milk type are statistically different, but milk sales across the years are not. However, the residuals of the ANOVA model are not normally distributed (as shown by the Shapiro-Wilk test) which may have had some impact on the ANOVA outcome. Further analysis using non-parametric tests would be recommended for this dataset.
 ```{r, fig.width = 10}
 milk_type_stats_data = subset(fluid_milk_sales, milk_type != 'Total Production')
   # Get rid of total proudction
@@ -328,3 +328,16 @@ shapiro.test(milk_type.residuals)
 
 
 ```
+
+
+## Milk Data Conclusions
+As shown in this document, milk trends varied by state over time and whole milk was the most commonly type of milk sold per year. In both of the ANOVA models created for milk production by state and milk sales by type, the residuals were not normally distributed. Additional non-paremetric tests could be performed in future such as Wilcoxon signed rank tests to compare two samples or sign tests to compare the data to an expected median value. The following chunk of code saves the means from the variables produced in the milk section of the report and saves them as a text file.
+```{r}
+
+write.table(state_stats[1:50,1], file = 'mean_milk_production_by_state')
+write.table(year_stats[1:48, 1], file = 'mean_milk_proudction_by_year')
+write.table(fluid_stats[1:8, 1], file = 'mean_milk_sales_by_type')
+
+
+```
+
