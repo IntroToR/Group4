@@ -37,18 +37,18 @@ fluid_milk_sales = dairy$fluid_milk_sales
   
 
 ## Milk Production by State and Region
-The state_milk_production csv file contained four columns: region, state, year, and milk produced. The years ranged from 1970 to 2017 and the data included all 50 states. The states were divided into the following ten regions: Northeast (ME, NH, VT, MA, RI, CT, NY, NJ, PA, DE, MD); Lake States (MI, WI, MN); Corn Belt (OH, IN, IL, IA, MO); Northern Plains (ND, SD, NE, KS); Appalachian (VA, WV, NC, KY, TN); Southeast (SC, GA, FL, AL); Delta States (MS, AR, LA); Southern Plaines (OK, TX); Mountain (MT, ID, WY, CO, NM, AZ, UT, NV); and Pacific (WA, OR, CA, AK, HI).
+The 'state_milk_production' file contained four columns: region, state, year, and milk produced. The years ranged from 1970 to 2017 and the data included all 50 states. The states were divided into the following ten regions: Northeast (ME, NH, VT, MA, RI, CT, NY, NJ, PA, DE, MD); Lake States (MI, WI, MN); Corn Belt (OH, IN, IL, IA, MO); Northern Plains (ND, SD, NE, KS); Appalachian (VA, WV, NC, KY, TN); Southeast (SC, GA, FL, AL); Delta States (MS, AR, LA); Southern Plaines (OK, TX); Mountain (MT, ID, WY, CO, NM, AZ, UT, NV); and Pacific (WA, OR, CA, AK, HI).
 
   
 ### Summary Statistics and Boxplots of Milk Production by State and by Year
-Here, I am calculating some summary statistics and boxplots for milk production by state and by year. This includes the mean, median, standard deviation, minimum, maximum, and sample size of each sub-group. This R chunk is used for calculating summary statistics by state. 
+Here, I am calculating some summary statistics and boxplots for milk production by state and by year. These statistics include the mean, median, standard deviation, minimum, maximum, and sample size of each sub-group. This R chunk is used for calculating summary statistics by state. 
 ```{r, fig.width = 10}
 # Preparing summary statistics by state
 prep = state_milk_production[,-1]
 state_df = pivot_wider(prep, names_from = state, values_from = milk_produced)
 
 state_stats = matrix(data = NA, nrow = (ncol(state_df) - 1), ncol = 6)
-cols = c('mean', 'median', 'standard deviation', 'minimum', 'maximum', 'sample_size')
+cols = c('mean', 'median', 'standard deviation', 'minimum', 'maximum', 'sample size')
 colnames(state_stats) = cols
 state_stats_rows = c()
 j = 1
@@ -61,7 +61,7 @@ for (i in 2:(ncol(state_df))) {
   state_stats[j, 'standard deviation'] = sd(state_stats_data)
   state_stats[j, 'minimum'] = min(state_stats_data)
   state_stats[j, 'maximum'] = max(state_stats_data)
-  state_stats[j, 'sample_size'] = length(state_stats_data)
+  state_stats[j, 'sample size'] = length(state_stats_data)
 
   j = j + 1
 }
@@ -90,13 +90,13 @@ ggplot(milk_plot_data, aes(x = state_abb, y = milk_produced, fill = region)) +
 ```
 
 
-This R chunk is used for calculating summary statistics by year
+This R chunk is used for calculating summary statistics by year.
 ```{r, fig.width = 10}
 # Preparing summary statistics by year
 year_df = pivot_wider(state_milk_production, names_from = year, values_from = milk_produced)
 
 year_stats = matrix(data = NA, nrow = (ncol(year_df) - 2), ncol = 6)
-cols = c('mean', 'median', 'standard deviation', 'minimum', 'maximum', 'sample_size')
+cols = c('mean', 'median', 'standard deviation', 'minimum', 'maximum', 'sample size')
 colnames(year_stats) = cols
 year_stats_rows = c()
 j = 1
@@ -109,7 +109,7 @@ for (i in 3:(ncol(year_df))) {
   year_stats[j, 'standard deviation'] = sd(year_stats_data)
   year_stats[j, 'minimum'] = min(year_stats_data)
   year_stats[j, 'maximum'] = max(year_stats_data)
-  year_stats[j, 'sample_size'] = length(year_stats_data)
+  year_stats[j, 'sample size'] = length(year_stats_data)
 
   j = j + 1
 }
@@ -247,7 +247,7 @@ shapiro.test(milk.residuals)
   
 
 ## Fluid Milk Sales
-The fluid_milk_sales csv file contained three columns: year, milk type, and pounds of milk product sold per year. The years ranged from 1970 to 2017 and the milk types included whoe milk, reduced fat (2%) milk, low fat (1%) milk, skim milk, flavored whole milk, flavored (not whole) milk, buttermilk, and eggnog. There was an additional column that included the total milk product.
+The 'fluid_milk_sales' file contained three columns: year, milk type, and pounds of milk product sold per year. The years ranged from 1975 to 2017 and the milk types included whole milk, reduced fat (2%) milk, low fat (1%) milk, skim milk, flavored whole milk, flavored (not whole) milk, buttermilk, and eggnog. There was an additional column that included the total milk product.
 
 ### Summary Statistics of Fluid Milk Sales
 ```{r, fig.width = 10}
@@ -256,7 +256,7 @@ fluid_df = pivot_wider(fluid_milk_sales, names_from = milk_type, values_from = p
 fluid_df = fluid_df[-c(10)] # gets rid of total production column
 
 fluid_stats = matrix(data = NA, nrow = (ncol(fluid_df) - 1), ncol = 6)
-cols = c('mean', 'median', 'standard deviation', 'minimum', 'maximum', 'sample_size')
+cols = c('mean', 'median', 'standard deviation', 'minimum', 'maximum', 'sample size')
 colnames(fluid_stats) = cols
 fluid_stats_rows = c()
 j = 1
@@ -270,7 +270,7 @@ for (i in 2:(ncol(fluid_df))) {
   fluid_stats[j, 'standard deviation'] = sd(fluid_stats_data)
   fluid_stats[j, 'minimum'] = min(fluid_stats_data)
   fluid_stats[j, 'maximum'] = max(fluid_stats_data)
-  fluid_stats[j, 'sample_size'] = length(fluid_stats_data)
+  fluid_stats[j, 'sample size'] = length(fluid_stats_data)
 
   j = j + 1
 }
@@ -286,12 +286,13 @@ kable(signif(fluid_stats, digits = 3), caption = 'Summary Statistics of Milk Sal
 milk_type_graph_data = subset(fluid_milk_sales, milk_type != 'Total Production')
   # Get rid of Total Production data
 
-ggplot(milk_type_graph_data, aes(milk_type, pounds, group = milk_type, color = milk_type)) +
+ggplot(milk_type_graph_data, aes(milk_type, pounds, group = milk_type, fill = milk_type)) +
   geom_boxplot() + 
-  labs(y = 'Milk Sales (lbs/yr)', title = 'Pounds of Milk Sold from 1975 to 2017', color = 'Milk Type') + 
+  labs(y = 'Milk Sales (lbs/yr)', title = 'Pounds of Milk Sold from 1975 to 2017', fill = 'Milk Type') + 
   theme(axis.text.x = element_blank(),
         axis.title.x = element_blank(),
-        axis.ticks.x = element_blank())
+        axis.ticks.x = element_blank()) +
+  scale_fill_brewer(palette = 'Spectral')
 
 
 
@@ -334,9 +335,9 @@ shapiro.test(milk_type.residuals)
 As shown in this document, milk trends varied by state over time and whole milk was the most commonly type of milk sold per year. In both of the ANOVA models created for milk production by state and milk sales by type, the residuals were not normally distributed. Additional non-paremetric tests could be performed in future such as Wilcoxon signed rank tests to compare two samples or sign tests to compare the data to an expected median value. The following chunk of code saves the means from the variables produced in the milk section of the report and saves them as a text file.
 ```{r}
 
-write.table(state_stats[1:50,1], file = 'mean_milk_production_by_state')
-write.table(year_stats[1:48, 1], file = 'mean_milk_proudction_by_year')
-write.table(fluid_stats[1:8, 1], file = 'mean_milk_sales_by_type')
+write.table(state_stats[1:50,1], file = 'mean_milk_production_by_state.txt')
+write.table(year_stats[1:48, 1], file = 'mean_milk_proudction_by_year.txt')
+write.table(fluid_stats[1:8, 1], file = 'mean_milk_sales_by_type.txt')
 
 
 ```
