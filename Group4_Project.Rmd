@@ -519,12 +519,117 @@ write.csv(means, file = 'cheese_type_means.txt')
 ```
 
 
-
-
-
-
 # Cows
-In this section, Suzanna Storms analyzes...
+In this section, Suzanna Storms analyzes dairy cow data, focusing on milk production improvement, and the price of cows over time. 
+
+### Summary stats
+Here I will extract put my data into a summary table using the average milk price, average milk cow number, milk production, and slaugher (cull) cow price. 
+Trying again:
+```{r}
+newcow <- cow %>% select(avg_price_milk, avg_milk_cow_number, milk_production_lbs, slaughter_cow_price, milk_cow_cost_per_animal )
+cow_sum_data <- summarytools::descr(newcow)
+View(cow_sum_data)
+
+```
+
+###Graphs
+The first figure displays as that over time, fewer cows are needed to produce more milk.
+```{r}
+
+ggplot(cow) +
+ aes(x = year, y = milk_production_lbs, colour = avg_milk_cow_number) +
+ geom_line(size = 1L) +
+ scale_color_distiller(palette = "Blues") +
+ labs(x = "Year", y = "Pounds of milk produced", title = "Average number of milk cows and milk production per year", color = "Number of dairy cows") +
+ theme_minimal()
+
+```
+
+
+The second figure displays pounds of milk to pay for a cow, and milk produced per cow over time.  We can see that, except for in the years 2000-2010, the pounds of milk needed to pay for a cow has remained steay, and cows have become more efficient, paying for themselves in half the time. In 1980, it took nearly one year for a cow to pay for herself in milk volume. However, in the last 5 years, a cow could pay for herself in one third of the time due to the volume of milk modern cows produce.
+```{r}
+library(ggplot2)
+
+ggplot(cow) +
+ aes(x = year, y = milk_volume_to_buy_cow_in_lbs, size = milk_per_cow) +
+ geom_point(colour = "#0c4c8a") +
+ labs(x = "Year", y = "Pounds of milk to pay for cow", title = "Amount of milk to pay for a cow by year", subtitle = "The pounds of milk to replace a cow have varied, and production has nearly doubled",  size = "Milk per cow") +
+ theme_minimal()
+```
+
+The third plot shows the slaughter cow price per pound by the total price for a replacment cow. Here we can see that often, seldom do high cull prices correlate with low replacement costs.
+```{r}
+library(ggplot2)
+
+ggplot(cow) +
+ aes(x = slaughter_cow_price, y = milk_cow_cost_per_animal) +
+ geom_point(size = 1L, colour = "#ed7953") +
+ geom_smooth(span = 0.75) +
+ labs(x = "Cull cow price per pound", y = "Replacement cow price ", title = "Cost per animal vs. cull price", subtitle = "Replacement price vs cull price ") +
+ theme_minimal()
+```
+
+
+
+###ANOVA
+Here I have provided two examples of ANOVA comparing the pounds of milk produced by cow number, the milk production and the price of milk, and then the slaughter price for a cow compared to buying a new cow.
+```{r}
+aov.cow_mp <- aov(cow$milk_production_lbs ~ cow$avg_milk_cow_number)
+summary(aov.cow_mp)
+
+aov.cow_mprice <- aov(cow$milk_production_lbs ~ cow$avg_price_milk)
+summary(aov.cow_mprice)
+
+aov.cow_sl<- aov(cow$slaughter_cow_price ~ cow$milk_cow_cost_per_animal)
+summary(aov.cow_sl)
+```
+###Verifying assumptions
+Here I am verifying some assumptions in order to appropriately use an ANOVA. I have several examples of QQ plots.
+```{r}
+cow_mp.residuals <- aov.cow_mp$residuals
+cow_mprice.residuals <- aov.cow_mprice$residuals
+cow_sl.residuals<- aov.cow_sl$residuals
+#boxplot not appropirate for my type of data. 
+#testing for normality
+shapiro.test (cow_mp.residuals)
+nortest::lillie.test(cow_mp.residuals)
+
+shapiro.test (cow_mprice.residuals)
+nortest::lillie.test(cow_mprice.residuals)
+
+shapiro.test (cow_sl.residuals)
+nortest::lillie.test(cow_sl.residuals)
+
+
+#testing QQ plot
+fBasics::qqnormPlot(cow_mp.residuals)
+car::qqPlot(cow_mp.residuals)
+ggpubr::ggqqplot(cow_mp.residuals)
+
+fBasics::qqnormPlot(cow_mprice.residuals)
+car::qqPlot(cow_mprice.residuals)
+ggpubr::ggqqplot(cow_mprice.residuals)
+
+fBasics::qqnormPlot(cow_sl.residuals)
+car::qqPlot(cow_sl.residuals)
+ggpubr::ggqqplot(cow_sl.residuals)
+```
+
+
+###Linear regression 
+Here we are looking at a linear regression of the average milk cow number and milk production in pounds by year, followed by a linear regression of the slaughter cow price and the cost of a dairy cow animal by year.
+```{r}
+data(cow)
+mod <- lm(cow$avg_milk_cow_number ~ cow$milk_production_lbs *cow$year )
+ggstatsplot::ggcoefstats(mod)
+
+data(cow)
+mod2<- lm(cow$slaughter_cow_price ~cow$milk_cow_cost_per_animal *cow$year)
+ggstatsplot::ggcoefstats(mod2)
+```
+
+
+fwrite(cow_sum_data,"cow_sum_txt.txt", sep=";",col.names = FALSE, row.names = FALSE)
 
 
 
