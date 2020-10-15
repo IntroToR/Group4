@@ -15,7 +15,7 @@ library(rstatix)
 library(ggpubr)
 library(ggthemes)
 library(ggExtra)
-install.packages("ggExtra")
+  
 
 dairy = tt_load(2019, 5)
 ```
@@ -36,7 +36,6 @@ sel_vars_totals <-
   select(clean_cheese,
          "Year",
          "Total American Chese":"Total Processed Cheese Products")
-View(sel_vars_totals)
 
 sel_vars_total1 <-
   select(clean_cheese,
@@ -66,10 +65,64 @@ ggplot(all_cheese_long, aes(x = Year, y = total_consumption, col = cheese_type))
 
 ```{r}
 
-ggplot(all_cheese_long) + geom_col(aes(x = lbs_per_person, y = cheese_type, fill = cheese_type)) + labs(x = "Year", y = "Dairy Type") + facet_wrap(~Year) + labs ( main = "Cheese Consumption Trends - Time Series") +
+all_cheese_long %>%
+filter(Year < "1979") %>%
+  ggplot(aes(x = lbs_per_person, y = cheese_type, fill = cheese_type)) +
+  geom_bar(stat = "identity") +
+  facet_wrap(~Year) +
   labs(title = "Yearly Cheese Consumption") +
-theme(axis.text.y=element_blank(), axis.text.x=element_blank())
+  theme(axis.text.y=element_blank(), axis.text.x=element_blank())
 
+all_cheese_long %>%
+filter(Year > "1979" & Year < "1990") %>%
+  ggplot(aes(x = lbs_per_person, y = cheese_type, fill = cheese_type)) +
+  geom_bar(stat = "identity") +
+  facet_wrap(~Year) +
+  labs(title = "Yearly Cheese Consumption") +
+  theme(axis.text.y=element_blank(), axis.text.x=element_blank())
+
+all_cheese_long %>%
+filter(Year > "1989" & Year < "2000") %>%
+  ggplot(aes(x = lbs_per_person, y = cheese_type, fill = cheese_type)) +
+  geom_bar(stat = "identity") +
+  facet_wrap(~Year) +
+  labs(title = "Yearly Cheese Consumption") +
+  theme(axis.text.y=element_blank(), axis.text.x=element_blank())
+
+all_cheese_long %>%
+filter(Year > "1999" & Year < "2010") %>%
+  ggplot(aes(x = lbs_per_person, y = cheese_type, fill = cheese_type)) +
+  geom_bar(stat = "identity") +
+  facet_wrap(~Year) +
+  labs(title = "Yearly Cheese Consumption") +
+  theme(axis.text.y=element_blank(), axis.text.x=element_blank())
+
+all_cheese_long %>%
+filter(Year > "2009") %>%
+  ggplot(aes(x = lbs_per_person, y = cheese_type, fill = cheese_type)) +
+  geom_bar(stat = "identity") +
+  facet_wrap(~Year) +
+  labs(title = "Yearly Cheese Consumption") +
+  theme(axis.text.y=element_blank(), axis.text.x=element_blank())
+
+```
+```{r}
+
+ggplot(clean_cheese) + 
+  geom_line(aes(x = clean_cheese$Year,
+                 y = clean_cheese$`Total American Chese`,
+                  color = "Total American Cheese"),
+                size = 2) +
+  geom_line(aes(x = clean_cheese$Year, y =
+                clean_cheese$`Total Italian Cheese`,
+                color = "Total Italian Cheese"),
+            size = 2) + 
+                labs(
+                  title = "Total American and Italian Cheese Consumption",
+                  subtitle = "A comparison of pounds consumed per person (1970 to 2017)",
+                  y = "lbs per person",
+                  x = "Year"
+                ) + theme_clean()
 ```
 
 ```{r}
@@ -78,18 +131,17 @@ ggplot(clean_cheese) +
   geom_line(aes(x = clean_cheese$Year,
                  y = clean_cheese$`Total Natural Cheese`,
                   color = "Total Natural Cheese"),
-                size = 1) +
+                size = 2) +
   geom_line(aes(x = clean_cheese$Year, y =
                 clean_cheese$`Total Processed Cheese Products`,
                 color = "Total Processed Cheese"),
-            size = 1) + 
+            size = 2) + 
                 labs(
                   title = "Total Natural Cheese and Total Processed Cheese Consumption",
                   subtitle = "A comparison of pounds consumed per person (1970 to 2017)",
                   y = "lbs per person",
                   x = "Year"
-                ) + theme_stata()
-
+                ) + theme_clean()
 
 
 ```
@@ -97,13 +149,14 @@ ggplot(clean_cheese) +
 ggplot(clean_cheese,
        aes(x = clean_cheese$Year,
            y = clean_cheese$`Total Processed Cheese Products`,
-           color = "Total Processed Cheese")) + geom_point() +
+           color = "Total Processed Cheese")) + geom_point(color = "darkblue") +
   geom_smooth(method = lm,
               se = TRUE,
-              fullrange = TRUE) + 
-  labs(title = "Total Processed Cheese Consumption", x = "Year", y = "Consumption (lbs)") + theme_bw()
+              fullrange = TRUE, color = "darkred", fill = "lightblue") + 
+  labs(title = "Total Processed Cheese Consumption", x = "Year", y = "Consumption (lbs)") + theme_clean()
 
 ```
 ```{r}
+
 
 ```
