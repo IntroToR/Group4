@@ -1,114 +1,109 @@
 ---
-title: "Raina"
+title: "help"
 author: "Raina Monaghan"
-date: "10/11/2020"
+date: "10/14/2020"
 output: html_document
 ---
 
-
-<!-- Will add comments later -->
 ```{r}
 library(dplyr)
 library(tidyverse)
 library(tidytuesdayR)
 library(ggplot2)
+library(summarytools)
+library(rstatix)
+library(ggpubr)
+library(ggthemes)
+library(ggExtra)
+install.packages("ggExtra")
 
 dairy = tt_load(2019, 5)
+```
 
+
+```{r}
 clean_cheese <- dairy$clean_cheese
-clean_cheese <- clean_cheese %>% rename(year = Year)
-milk_product_facts <- dairy$milk_products_facts
+clean_cheese <- as.data.frame(clean_cheese)
 
-joined <-
-  inner_join(clean_cheese, dairy$milk_products_facts, by = "year")
-joined <-
-  select(joined,
-         "Cheddar":"Foods and spreads",
-         "cheese_american":"cheese_cottage")
-joined <- na.omit(clean_cheese)
-clean_cheese <- na.omit(clean_cheese)
-view(joined)
-summary(joined)
+all_cheese <- select(clean_cheese, "Cheddar":"Foods and spreads")
+summary_whole <- summarytools::descr(all_cheese, transpose = TRUE)
+summary_whole
+```
 
-clean_cheese_long <- clean_cheese %>%
-  gather(cheese_type, lbs_per_person,-year) 
-summary(clean_cheese_long)
+```{r}
 
+sel_vars_totals <-
+  select(clean_cheese,
+         "Year",
+         "Total American Chese":"Total Processed Cheese Products")
+View(sel_vars_totals)
 
-tac <- clean_cheese$`Total American Chese`
-tic <- clean_cheese$`Total Italian Cheese`
-tnc <- clean_cheese$`Total Natural Cheese`
-tpcp <- clean_cheese$`Total Processed Cheese Products`
-year<- clean_cheese$year
+sel_vars_total1 <-
+  select(clean_cheese,
+         "Total American Chese":"Total Processed Cheese Products")
 
+sum_1 <- summarytools::descr(sel_vars_total1)
+sum_1 
 
-ggplot(clean_cheese) + geom_line(
-  aes(
-    x = year,
-    y = tnc,
-    color = "Total Natural Cheese"
-  )
-) +
-  geom_line(
-    aes(
-      x = year,
-      tpcp,
-      color = "Total Processed Cheese"
-    )
-  ) + labs(
-    title = "Total Natural Cheese and Total Processed Cheese Consumption",
-    subtitle = "A comparison of lbs per person consumed (1970 to 2017)",
-    y = "lbs per person",
-    x = "Year"
-  )
+```
 
 
-ggplot(clean_cheese) + geom_line(
-  aes(
-    x = year,
-    y = tic,
-    color = "Total Italian Cheese"
-  )
-) +
-  geom_line(
-    aes(
-      x = year,
-      y = tac,
-      color = "Total American Cheese"
-    )
-  ) + labs(
-    title = "Total Italian Cheese and Total American Cheese Consumption",
-    subtitle = "A comparison of lbs per person consumed (1970 to 2017)",
-    y = "lbs per person",
-    x = "Year"
-  )
+```{r}
 
-ggplot(
-  clean_cheese,
-  aes(
-    x = year,
-    y = tpcp,
-    color = "Total Processed Cheese"
-  )
-) + geom_point() +
+total_cheese_consumption = clean_cheese$`Total Natural Cheese` + clean_cheese$`Total Processed Cheese Products`
+
+all_cheese_long <- clean_cheese%>%
+  select(Year: "Foods and spreads")%>%
+  gather(cheese_type, lbs_per_person, -Year) %>%
+  mutate(total_consumption = lbs_per_person/total_cheese_consumption)
+
+ggplot(all_cheese_long, aes(x = Year, y = total_consumption, col = cheese_type)) +
+    geom_point(stat = "identity", position = "stack") +
+    scale_y_continuous(labels = scales::percent) +
+    labs(title = "Total Cheese Consumption by Cheese Type", y = "Percent of Total Consumption")
+    
+```
+
+```{r}
+
+ggplot(all_cheese_long) + geom_col(aes(x = lbs_per_person, y = cheese_type, fill = cheese_type)) + labs(x = "Year", y = "Dairy Type") + facet_wrap(~Year) + labs ( main = "Cheese Consumption Trends - Time Series") +
+  labs(title = "Yearly Cheese Consumption") +
+theme(axis.text.y=element_blank(), axis.text.x=element_blank())
+
+```
+
+```{r}
+
+ggplot(clean_cheese) + 
+  geom_line(aes(x = clean_cheese$Year,
+                 y = clean_cheese$`Total Natural Cheese`,
+                  color = "Total Natural Cheese"),
+                size = 1) +
+  geom_line(aes(x = clean_cheese$Year, y =
+                clean_cheese$`Total Processed Cheese Products`,
+                color = "Total Processed Cheese"),
+            size = 1) + 
+                labs(
+                  title = "Total Natural Cheese and Total Processed Cheese Consumption",
+                  subtitle = "A comparison of pounds consumed per person (1970 to 2017)",
+                  y = "lbs per person",
+                  x = "Year"
+                ) + theme_stata()
+
+
+
+```
+```{r}
+ggplot(clean_cheese,
+       aes(x = clean_cheese$Year,
+           y = clean_cheese$`Total Processed Cheese Products`,
+           color = "Total Processed Cheese")) + geom_point() +
   geom_smooth(method = lm,
               se = TRUE,
-              fullrange = TRUE)
+              fullrange = TRUE) + 
+  labs(title = "Total Processed Cheese Consumption", x = "Year", y = "Consumption (lbs)") + theme_bw()
 
-
-
-tpcp.reg <-
-  lm(year ~ tpcp)
-summary(tpcp.reg)
-
-tnc.reg <-
-  lm(year ~ tnc)
-summary(tnc.reg)
-
-tac.reg <- lm(year ~ tac)
-summary(tac.reg)
-
-tic.reg <- lm(year ~ tic)
-summary(tic)
+```
+```{r}
 
 ```
