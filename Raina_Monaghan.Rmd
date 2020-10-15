@@ -63,7 +63,7 @@ sum_1
 
 total_cheese_consumption = clean_cheese$`Total Natural Cheese` + clean_cheese$`Total Processed Cheese Products`
 
-# The pipe command is inteded to select the variables of interest and adjust the pivot of the table in preparation for plotting
+# The pipe command is intended to select the variables of interest and adjust the pivot of the table in preparation for plotting
 all_cheese_long <- clean_cheese%>%
   select(Year: "Foods and spreads")%>%
   gather(cheese_type, lbs_per_person, -Year) %>%
@@ -145,7 +145,7 @@ ggplot(clean_cheese) +
 ```
 
 
-### In order to visualize other trends that may correspond with the decline of processed cheese, this portion is dedicated to a line graph which depicts the relationship between cheese and American cheese. Due to the high consumption of cheddar and mozzarella, both retain a positive correlation.
+### In order to visualize other trends that may correspond with the decline of processed cheese, this portion is dedicated to a line graph which depicts the relationship between Italian cheese and American cheese. Due to the high consumption of cheddar and mozzarella, both retain a positive correlation.
 ```{r}
 
 ggplot(clean_cheese) + 
@@ -178,7 +178,26 @@ ggplot(clean_cheese,
   labs(title = "Total Processed Cheese Consumption", x = "Year", y = "Consumption (lbs)") + theme_clean()
 
 ```
+
+### The following are simple statistical analyses, including a two-way ANOVA and simple linear regression. Due to a low significance value for both, other tests should be performed for a better statistical understanding of the data. 
 ```{r}
+#Linear regression for total processed cheese products
+tpcp.reg <-
+  lm(clean_cheese$Year ~ clean_cheese$`Total Processed Cheese Products`)
+summary(tpcp.reg)
+
+res.aov <- aov(clean_cheese$Year ~ clean_cheese$`Total Processed Cheese Products`+ clean_cheese$`Total Natural Cheese`, data = clean_cheese)
+summary(res.aov)
+
+```
 
 
+### Saving cheese type averages into a text file
+```{r}
+cheese_type_only <- clean_cheese %>% select("Cheddar":"Foods and spreads")
+means <- cheese_type_only %>% summarise_each(funs(mean))
+write.csv(means, file = 'cheese_type_means.txt')
+
+
+            
 ```

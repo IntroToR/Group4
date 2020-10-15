@@ -19,6 +19,9 @@ library(usmap)
 library(plyr)
 library(data.table)
 library(knitr)
+library(summarytools)
+library(ggthemes)
+
 
 dairy = tt_load(2019,5)
 clean_cheese = dairy$clean_cheese
@@ -339,11 +342,181 @@ write.table(fluid_stats[1:8, 1], file = 'mean_milk_sales_by_type.txt')
 ```
 
 
-
-
-
 # Cheese
-In this section, Raina Monaghan analyzes...
+In this section, Raina Monaghan analyzes cheese consumption trends in the United States.
+
+## The "clean_cheese" Dataset
+The "clean_cheese" dataset contains 17 columns in total, the first dedicated to years spanning from 1970 to 2017, with 11 allocated to various cheese types. Cheese types include: Cheddar, American Other, Mozzarella, Italian other, Swiss, Brick, Muenster, Cream and Neufchatel, Blue, Other Dairy Cheese, Processed Cheese, Foods and Spreads. Four of the 17 columns are dedicated to cumulative values: Total American Cheese, Total Italian Chese, Total Natural Cheese, Total Processing Cheese Products.  Data is gathered in the dataset as a measure of cheeses consumed, in pounds, per person. 
+```{r}
+clean_cheese <- as.data.frame(clean_cheese)
+```
+
+
+### Summary statistics for cheese types are presented in this portion. They include the: mean, standard deviation, minimum and maximum, Q1 and Q3, median, MAD and IQR.
+```{r}
+# Selecting only the cheese types in preparation for summary statistics
+all_cheese <- select(clean_cheese, "Cheddar":"Foods and spreads")
+summary_whole <- summarytools::descr(all_cheese)
+summary_whole
+```
+
+
+### Summary statistics are presented in this portion for "cumulative" type columns.
+```{r}
+#Subsetting the variables of interest
+sel_vars_total <-
+  select(clean_cheese,
+         "Total American Chese":"Total Processed Cheese Products")
+
+sum_1 <- summarytools::descr(sel_vars_total)
+sum_1 
+
+```
+
+
+### This scatter plot will graph all cheese types as a measure of the total percent of consumption throughout the years. Mozzarella and Cheddar are among the highest consumer-selected cheeses in the country.
+```{r}
+
+total_cheese_consumption = clean_cheese$`Total Natural Cheese` + clean_cheese$`Total Processed Cheese Products`
+
+# The pipe command is intended to select the variables of interest and adjust the pivot of the table in preparation for plotting
+all_cheese_long <- clean_cheese%>%
+  select(Year: "Foods and spreads")%>%
+  gather(cheese_type, lbs_per_person, -Year) %>%
+  mutate(total_consumption = lbs_per_person/total_cheese_consumption)
+
+ggplot(all_cheese_long, aes(x = Year, y = total_consumption, col = cheese_type)) +
+    geom_point(stat = "identity", position = "stack") +
+    scale_y_continuous(labels = scales::percent) +
+    labs(title = "Total Cheese Consumption by Cheese Type", y = "Percent of Total Consumption")
+    
+```
+
+### In order to better understand the trends within this time period, the bar plots below display the trends by decade. Expounding on observations made on the previous scatterplot, this set of bar plots show that Mozzarella became the more popular cheese in the 2000-2010 year bracket. 
+```{r}
+
+all_cheese_long %>%
+filter(Year < "1979") %>%
+  ggplot(aes(x = lbs_per_person, y = cheese_type, fill = cheese_type)) +
+  geom_bar(stat = "identity") +
+  facet_wrap(~Year) +
+  labs(title = "Yearly Cheese Consumption") +
+  theme(axis.text.y=element_blank(), axis.text.x=element_blank())
+
+all_cheese_long %>%
+filter(Year > "1979" & Year < "1990") %>%
+  ggplot(aes(x = lbs_per_person, y = cheese_type, fill = cheese_type)) +
+  geom_bar(stat = "identity") +
+  facet_wrap(~Year) +
+  labs(title = "Yearly Cheese Consumption") +
+  theme(axis.text.y=element_blank(), axis.text.x=element_blank())
+
+all_cheese_long %>%
+filter(Year > "1989" & Year < "2000") %>%
+  ggplot(aes(x = lbs_per_person, y = cheese_type, fill = cheese_type)) +
+  geom_bar(stat = "identity") +
+  facet_wrap(~Year) +
+  labs(title = "Yearly Cheese Consumption") +
+  theme(axis.text.y=element_blank(), axis.text.x=element_blank())
+
+all_cheese_long %>%
+filter(Year > "1999" & Year < "2010") %>%
+  ggplot(aes(x = lbs_per_person, y = cheese_type, fill = cheese_type)) +
+  geom_bar(stat = "identity") +
+  facet_wrap(~Year) +
+  labs(title = "Yearly Cheese Consumption") +
+  theme(axis.text.y=element_blank(), axis.text.x=element_blank())
+
+all_cheese_long %>%
+filter(Year > "2009") %>%
+  ggplot(aes(x = lbs_per_person, y = cheese_type, fill = cheese_type)) +
+  geom_bar(stat = "identity") +
+  facet_wrap(~Year) +
+  labs(title = "Yearly Cheese Consumption") +
+  theme(axis.text.y=element_blank(), axis.text.x=element_blank())
+
+```
+
+
+### This portion seeks to examine the relationship between natural cheese trends and processed cheese trends. While they apparently lack a direct correlation in trends, total natural cheese consumption has continued to rise while total processed cheese consumption remains largely unchanged or in a slight decline. 
+```{r}
+
+ggplot(clean_cheese) + 
+  geom_line(aes(x = clean_cheese$Year,
+                 y = clean_cheese$`Total Natural Cheese`,
+                  color = "Total Natural Cheese"),
+                size = 2) +
+  geom_line(aes(x = clean_cheese$Year, y =
+                clean_cheese$`Total Processed Cheese Products`,
+                color = "Total Processed Cheese"),
+            size = 2) + 
+                labs(
+                  title = "Total Natural Cheese and Total Processed Cheese Consumption",
+                  subtitle = "A comparison of pounds consumed per person (1970 to 2017)",
+                  y = "lbs per person",
+                  x = "Year"
+                ) + theme_clean()
+
+
+```
+
+
+### In order to visualize other trends that may correspond with the decline of processed cheese, this portion is dedicated to a line graph which depicts the relationship between Italian cheese and American cheese. Due to the high consumption of cheddar and mozzarella, both retain a positive correlation.
+```{r}
+
+ggplot(clean_cheese) + 
+  geom_line(aes(x = clean_cheese$Year,
+                 y = clean_cheese$`Total American Chese`,
+                  color = "Total American Cheese"),
+                size = 2) +
+  geom_line(aes(x = clean_cheese$Year, y =
+                clean_cheese$`Total Italian Cheese`,
+                color = "Total Italian Cheese"),
+            size = 2) + 
+                labs(
+                  title = "Total American and Italian Cheese Consumption",
+                  subtitle = "A comparison of pounds consumed per person (1970 to 2017)",
+                  y = "lbs per person",
+                  x = "Year"
+                ) + theme_clean()
+```
+
+
+### A closer look at processed cheese consumption shows that it peaked around the year 2000 followed by a swift decline.
+```{r}
+ggplot(clean_cheese,
+       aes(x = clean_cheese$Year,
+           y = clean_cheese$`Total Processed Cheese Products`,
+           color = "Total Processed Cheese")) + geom_point(color = "darkblue") +
+  geom_smooth(method = lm,
+              se = TRUE,
+              fullrange = TRUE, color = "darkred", fill = "lightblue") + 
+  labs(title = "Total Processed Cheese Consumption", x = "Year", y = "Consumption (lbs)") + theme_clean()
+
+```
+
+### The following are simple statistical analyses, including a two-way ANOVA and simple linear regression. Due to a low significance value for both, other tests should be performed for a better statistical understanding of the data. 
+```{r}
+#Linear regression for total processed cheese products
+tpcp.reg <-
+  lm(clean_cheese$Year ~ clean_cheese$`Total Processed Cheese Products`)
+summary(tpcp.reg)
+
+res.aov <- aov(clean_cheese$Year ~ clean_cheese$`Total Processed Cheese Products`+ clean_cheese$`Total Natural Cheese`, data = clean_cheese)
+summary(res.aov)
+
+```
+
+
+### Saving cheese type averages into a text file
+```{r}
+cheese_type_only <- clean_cheese %>% select("Cheddar":"Foods and spreads")
+means <- cheese_type_only %>% summarise_each(funs(mean))
+write.csv(means, file = 'cheese_type_means.txt')
+
+
+            
+```
 
 
 
