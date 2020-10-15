@@ -1,1 +1,6 @@
-
+ggplot(cow) +
+ aes(x = year, y = milk_production_lbs, colour = avg_milk_cow_number) +
+ geom_line(size = 1L) +
+ scale_color_distiller(palette = "Blues") +
+ labs(x = "Year", y = "Pounds of milk produced", title = "Average number of milk cows and milk production per year", color = "Number of dairy cows") +
+ theme_minimal()
