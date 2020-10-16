@@ -1,0 +1,2 @@
+"","Cheddar","American Other","Mozzarella","Italian other","Swiss","Brick","Muenster","Cream and Neufchatel","Blue","Other Dairy Cheese","Processed Cheese","Foods and spreads"
+"1",8.88916666666667,2.61833333333333,6.860625,2.15291666666667,1.15541666666667,0.0539583333333333,0.340208333333333,1.74395833333333,NA,1.018125,4.32854166666667,3.16395833333333
