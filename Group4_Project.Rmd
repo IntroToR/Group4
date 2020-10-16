@@ -21,6 +21,7 @@ library(data.table)
 library(knitr)
 library(summarytools)
 library(ggthemes)
+library(nortest)
 
 
 dairy = tt_load(2019,5)
