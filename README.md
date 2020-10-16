@@ -1,2 +1,5 @@
-# Group4
-Group 4 folder for CPSC 441
+This is the folder for Group4 of CPSC 441.
+
+The team members are Gemma Clark, Raina Monaghan, and Suzanna Storms.
+
+We analyzed Dairy Production and Consumption.
