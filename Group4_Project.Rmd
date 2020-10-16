@@ -29,6 +29,7 @@ fluid_milk_sales = dairy$fluid_milk_sales
 milk_products_facts = dairy$milk_products_facts
 milkcow_facts = dairy$milkcow_facts
 state_milk_production = dairy$state_milk_production
+cow = dairy$milkcow_facts
 ```
 
 
